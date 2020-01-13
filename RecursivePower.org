@@ -1,0 +1,99 @@
+#+STARTUP:              showall
+#+LATEX_CLASS:          article
+#+LATEX_CLASS_OPTIONS:  [12pt]
+#+LATEX_HEADER:         \usepackage[margin=1.0in]{geometry}
+#+TITLE:                Title Here
+#+AUTHOR:               Charlie Martin
+#+EMAIL:                ??
+#+DESCRIPTION:          
+#+KEYWORDS:             
+#+LANGUAGE:             en
+#+OPTIONS:              H:2 num:t toc:nil \n:nil
+#+OPTIONS:              TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT:           view:nil toc:nil ltoc:t mouse:underline buttons:0 path:https://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS:   export
+#+EXPORT_EXCLUDE_TAGS:  noexport
+
+* A Short Tutorial on Recursion
+
+One of the first obstacles programming students run into is
+programming with recursion. It's so central to all of computer science
+that by the time you have a graduate degree, you've almost forgotten a
+time when you didn't understand it — so many people forget that it was
+a hard concept when they first started.
+
+When a beginner looks at it, however, it looks completely alien:
+"Wait, you have a program that calls /itself/? How can that work?!"
+It's like the old story about someone who's so strong that they can
+change a lightbulb over their head by just picking themselves up by
+their own bootstraps.
+
+Recursion isn't really like that. Instead, recursion is a matter of
+looking at a problem and seeing it's composed of smaller
+problems. There are more complicated examples, but there's a very
+simple example that is often the first recursive problem with which a
+student is presented: computing $x^n$ recursively.
+
+** Definition
+
+I'm sure everyone is familiar with the basic definition of recursion:
+you multiply the base $x$ by itself $n$ times. In other words:
+\(x\times x \times x \cdots \times x\). 
+
+Now, recall the associative property of multiplication, and you'll see
+that we can add parentheses and get
+
+\[(x \times (x \times (x \times \cdots x)))\]
+
+In other words, \(x^n = x \times x^{n-1}\).  
+
+** Recursive Definition
+
+Of course, we know that \(x^)=1\) and \(x^1=x\), and we can put those
+together into what is known as a /recursive definition of
+exponentatiation/.
+
+\(x^n\) is defined as 1 if $n=0$, $x$ if $n=1$, otherwise $x \times
+x^{n-1}$.
+
+And that recursive definition leads directly to recursive code:
+
+#+include: "./rpow.c" src C
+
+** Understanding the code
+
+Yes, it's still calling itself, but notice that each time it does,
+=exponent= is one less. So, for example, if we want to get $2^6$ we
+are calling
+
+#+begin_verse
+=rpow(2,6)=
+  =2 * rpow(2,5)=
+    =2 * rpow(2,4)=
+      =2 * rpow(2,3)=
+        =2 * rpow(2,2)=
+          =2 * rpow(2,1)=
+            =2 * 1= or =2=
+          =2 * 2= or =4=
+        =2 * (2*2)= or =8=
+      =2 * (2 * (2*2))= or =16=
+    =2 * (2*(2*(2*2)))= or =32=
+  =2 * (2*(2*(2*(2*2))))= or =64=
+so the result is =64=
+#+end_verse
+
+
+** $O(log n)$
+
+I hadn't thought of this at first, but the algorithm above computes
+the result in $O(n)$ steps. But there's another version that computes
+in $O(lg n)$ steps.
+
+#+begin_src python
+  if n is even:
+      return pow(x,n//2)**2
+  else:
+      return x * pow(x,n-1)
+
+#+end_src
+
