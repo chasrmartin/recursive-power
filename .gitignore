@@ -49,3 +49,8 @@ flycheck_*.el
 
 *.tex
 *.pdf
+*.o
+
+# This is sort of ugly but it's late. Just explicitly ignore the executables
+rpow
+rpowOlg2
